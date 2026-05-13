@@ -5,8 +5,9 @@ import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import ThreeBackground from '@/components/ThreeBackground';
+import SmoothScrollContainer from '@/components/SmoothScrollContainer';
 
-const inter  = Inter({ subsets: ['latin'], variable: '--font-sans',    display: 'swap' });
+const inter   = Inter({ subsets: ['latin'], variable: '--font-sans',    display: 'swap' });
 const dmSerif = DM_Serif_Display({ subsets: ['latin'], weight: '400', variable: '--font-display', display: 'swap' });
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThreeBackground />
         <Toaster
           theme="dark"
+          position="bottom-right"
           toastOptions={{
             style: {
               background: 'var(--bg-3)',
@@ -35,9 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
             <Topbar />
-            <main id="scroll-root" style={{ flex: 1, overflowY: 'auto', padding: '36px 40px' }}>
+            <SmoothScrollContainer>
               {children}
-            </main>
+            </SmoothScrollContainer>
           </div>
         </div>
       </body>

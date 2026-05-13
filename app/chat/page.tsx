@@ -9,11 +9,12 @@ const KEY = 'synapse_docs_v1';
 const loadDocs = (): Doc[] => { try { return JSON.parse(localStorage.getItem(KEY) ?? '[]'); } catch { return []; } };
 
 export default function ChatPage() {
-  const [docs, setDocs] = useState<Doc[]>([]);
-  const [doc,  setDoc]  = useState<Doc | null>(null);
-  const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [inp,  setInp]  = useState('');
-  const [busy, setBusy] = useState(false);
+  const [docs, setDocs]       = useState<Doc[]>([]);
+  const [doc,  setDoc]        = useState<Doc | null>(null);
+  const [msgs, setMsgs]       = useState<Msg[]>([]);
+  const [inp,  setInp]        = useState('');
+  const [busy, setBusy]       = useState(false);
+  const [streaming, setStreaming] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
   const ta     = useRef<HTMLTextAreaElement>(null);
 
@@ -32,19 +33,50 @@ export default function ChatPage() {
     const next: Msg[] = [...msgs, { role: 'user', content: text }];
     setMsgs(next); setInp('');
     if (ta.current) ta.current.style.height = '44px';
-    setBusy(true);
+    setBusy(true); setStreaming(false);
+
+    // Add empty assistant placeholder
+    setMsgs(p => [...p, { role: 'assistant', content: '' }]);
+
     try {
       const r = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: next, docContext: doc?.text ?? null, docName: doc?.name ?? null }),
       });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error ?? 'Chat error');
-      setMsgs(p => [...p, { role: 'assistant', content: d.content }]);
+
+      if (!r.ok) {
+        const d = await r.json();
+        throw new Error(d.error ?? 'Chat error');
+      }
+
+      const reader  = r.body!.getReader();
+      const decoder = new TextDecoder();
+      setStreaming(true);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMsgs(p => {
+          const last = p[p.length - 1];
+          return [...p.slice(0, -1), { ...last, content: last.content + chunk }];
+        });
+      }
     } catch (e) {
-      setMsgs(p => [...p, { role: 'assistant', content: `⚠️ ${(e as Error).message}` }]);
-    } finally { setBusy(false); }
+      setMsgs(p => {
+        const last = p[p.length - 1];
+        const errMsg = `⚠️ ${(e as Error).message}`;
+        if (last?.role === 'assistant' && !last.content) {
+          return [...p.slice(0, -1), { role: 'assistant', content: errMsg }];
+        }
+        return [...p, { role: 'assistant', content: errMsg }];
+      });
+    } finally {
+      setBusy(false); setStreaming(false);
+    }
   }, [inp, busy, msgs, doc]);
+
+  const isLastAssistant = (i: number) => i === msgs.length - 1 && msgs[i]?.role === 'assistant';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - var(--topbar-h) - 72px)', maxWidth: 740, margin: '0 auto' }}>
@@ -61,9 +93,7 @@ export default function ChatPage() {
           {docs.map(d => <option key={d.docId} value={d.docId}>{d.name}</option>)}
         </select>
         <ChevronDown size={13} style={{ color: 'var(--t3)', flexShrink: 0 }} />
-        {doc && (
-          <span className="pill pill-gold" style={{ flexShrink: 0 }}>Context loaded</span>
-        )}
+        {doc && <span className="pill pill-gold" style={{ flexShrink: 0 }}>Context loaded</span>}
       </div>
 
       {/* Messages */}
@@ -97,29 +127,32 @@ export default function ChatPage() {
               width: 28, height: 28, borderRadius: 8, flexShrink: 0,
               background: m.role === 'user'
                 ? 'linear-gradient(135deg, #b8813e, #c8965c)'
-                : 'linear-gradient(135deg, #2a1f3d, #3d2f5c)',
+                : 'linear-gradient(135deg, #1e1630, #2d2048)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 11, fontWeight: 800,
               color: m.role === 'user' ? '#1a0f04' : 'var(--purple)',
             }}>
               {m.role === 'user' ? 'U' : 'S'}
             </div>
-            <div style={{
-              maxWidth: '78%', padding: '11px 15px', fontSize: 14, lineHeight: 1.65,
-              borderRadius: m.role === 'user' ? '14px 3px 14px 14px' : '3px 14px 14px 14px',
-              background: m.role === 'user' ? 'rgba(200,150,90,.12)' : 'var(--bg-2)',
-              border: m.role === 'user' ? '1px solid rgba(200,150,90,.22)' : '1px solid var(--br)',
-              whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-              color: 'var(--t1)',
-            }}>
-              {m.content}
+            <div
+              className={streaming && isLastAssistant(i) ? 'streaming-cursor' : ''}
+              style={{
+                maxWidth: '78%', padding: '11px 15px', fontSize: 14, lineHeight: 1.7,
+                borderRadius: m.role === 'user' ? '14px 3px 14px 14px' : '3px 14px 14px 14px',
+                background: m.role === 'user' ? 'rgba(200,150,90,.12)' : 'var(--bg-2)',
+                border: m.role === 'user' ? '1px solid rgba(200,150,90,.22)' : '1px solid var(--br)',
+                whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--t1)',
+              }}
+            >
+              {m.content || (busy && isLastAssistant(i) && !streaming ? null : m.content)}
             </div>
           </div>
         ))}
 
-        {busy && (
+        {/* Typing indicator — only while waiting for first token */}
+        {busy && !streaming && (
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #2a1f3d, #3d2f5c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--purple)', flexShrink: 0 }}>S</div>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #1e1630, #2d2048)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--purple)', flexShrink: 0 }}>S</div>
             <div style={{ padding: '14px 18px', background: 'var(--bg-2)', border: '1px solid var(--br)', borderRadius: '3px 14px 14px 14px', display: 'flex', gap: 5, alignItems: 'center' }}>
               {[0, 1, 2].map(n => (
                 <span key={n} style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--gold)', display: 'inline-block', opacity: .6, animation: `bounce-dot 1.3s ${n * .17}s infinite` }} />

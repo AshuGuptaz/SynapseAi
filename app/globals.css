@@ -189,12 +189,24 @@ body::after {
 .divider { height: 1px; background: var(--br); }
 
 /* ── Animations ─────────────────────────────────────── */
-@keyframes shimmer { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
-@keyframes spin    { to { transform: rotate(360deg) } }
-@keyframes bounce-dot { 0%,80%,100%{transform:scale(.3);opacity:.2} 40%{transform:scale(1.05);opacity:1} }
-@keyframes glow-pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes shimmer   { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
+@keyframes spin      { to { transform: rotate(360deg) } }
+@keyframes bounce-dot{ 0%,80%,100%{transform:scale(.3);opacity:.2} 40%{transform:scale(1.05);opacity:1} }
+@keyframes glow-pulse{ 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes blink     { 0%,100%{opacity:1} 50%{opacity:0} }
 
 .spin { display:inline-block; animation: spin .75s linear infinite; }
+
+/* Streaming cursor — appended to AI message while tokens arrive */
+.streaming-cursor::after {
+  content: '▋';
+  display: inline-block;
+  margin-left: 2px;
+  font-size: .82em;
+  color: var(--gold);
+  animation: blink .65s ease infinite;
+  vertical-align: baseline;
+}
 
 .skeleton {
   background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%);
