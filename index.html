@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synapse — AI Document Intelligence</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/views.css" />
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <div class="app">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 2v6m0 8v6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24" />
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name"><span>Synapse</span></div>
+          <div class="brand-tag">Document Intelligence</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Workspace</div>
+        <div class="nav-item active" data-view="dashboard">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 3h7v9H3zm11 0h7v5h-7zm0 9h7v9h-7zM3 16h7v5H3z" />
+          </svg>
+          Dashboard
+        </div>
+        <div class="nav-item" data-view="documents">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+          </svg>
+          Documents
+          <span class="badge" id="docsBadge">128</span>
+        </div>
+        <div class="nav-item" data-view="search">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          Smart Search
+        </div>
+        <div class="nav-item" data-view="chat">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          AI Chat
+        </div>
+        <div class="nav-item" data-view="insights">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+          Insights
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Library</div>
+        <div class="nav-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+          </svg>
+          Saved Items
+        </div>
+        <div class="nav-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          Collections
+        </div>
+        <div class="nav-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </svg>
+          Shared with me
+        </div>
+        <div class="nav-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          Settings
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="avatar">AG</div>
+        <div class="user-info">
+          <div class="name">Ashutosh G.</div>
+          <div class="plan">Pro plan · ☁ Cloud</div>
+        </div>
+        <div class="dot-online" title="Online"></div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn sidebar-toggle" id="sidebarToggle" title="Menu" aria-label="Toggle sidebar">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 12h18M3 6h18M3 18h18" />
+          </svg>
+        </button>
+        <div class="crumb">
+          <span>Workspace</span>
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+          <span class="crumb-current" id="crumbView">Dashboard</span>
+        </div>
+        <div class="topbar-search">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input id="topbarSearchInput" aria-label="Quick search" placeholder="Quick search documents, ideas, anything…" />
+          <kbd>⌘K</kbd>
+        </div>
+        <button class="icon-btn" title="Notifications">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9zM10.3 21a1.94 1.94 0 0 0 3.4 0" />
+          </svg>
+          <span class="pulse"></span>
+        </button>
+        <button class="icon-btn" title="Help">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <path d="M12 17h.01" />
+          </svg>
+        </button>
+        <button class="btn-primary" data-action="upload">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+          </svg>
+          Upload
+        </button>
+      </header>
+
+      <div class="content">
+        <!-- ============== DASHBOARD ============== -->
+        <section class="view active" id="view-dashboard">
+          <div class="section-head">
+            <div>
+              <h1>Welcome back, <span class="gradient-text">Ashutosh</span></h1>
+              <div class="subtitle">Here's what's happening across your knowledge base today.</div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="icon-btn" title="Filter" data-action="dashboard-filter">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+                </svg>
+              </button>
+              <button class="icon-btn" title="Export" data-action="dashboard-export">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="kpi-glow"></div>
+              <div class="kpi-icon kpi-icon-violet"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" />
+                </svg></div>
+              <div class="kpi-label">Documents indexed</div>
+              <div class="kpi-value" id="kpiDocsIndexed">1,284</div>
+              <div class="kpi-trend">▲ 12.4% vs last week</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-glow"></div>
+              <div class="kpi-icon kpi-icon-cyan"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg></div>
+              <div class="kpi-label">Searches this week</div>
+              <div class="kpi-value">3,420</div>
+              <div class="kpi-trend">▲ 28.1% vs last week</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-glow"></div>
+              <div class="kpi-icon kpi-icon-pink"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg></div>
+              <div class="kpi-label">AI conversations</div>
+              <div class="kpi-value">196</div>
+              <div class="kpi-trend">▲ 9.2% vs last week</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-glow"></div>
+              <div class="kpi-icon kpi-icon-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg></div>
+              <div class="kpi-label">Avg. retrieval time</div>
+              <div class="kpi-value">182<span style="font-size:16px;color:var(--text-faint);">ms</span></div>
+              <div class="kpi-trend down">▼ 14ms faster</div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">Activity over the last 14 days</div>
+                <div class="card-action" data-view-go="documents">View all →</div>
+              </div>
+              <div class="chart-wrap" id="chartWrap"></div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">Recent activity</div>
+                <div class="card-action" data-view-go="documents">All →</div>
+              </div>
+              <div class="activity-list">
+                <div class="activity">
+                  <div class="activity-icon upload"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg></div>
+                  <div class="activity-body">
+                    <p>Uploaded <strong>Q2_Financial_Report.pdf</strong></p>
+                    <div class="activity-time">2 minutes ago · Indexed in 4.1s</div>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="activity-icon search"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.3-4.3" />
+                    </svg></div>
+                  <div class="activity-body">
+                    <p>Searched <strong>"GDPR compliance for cross-border data"</strong></p>
+                    <div class="activity-time">14 minutes ago · 23 results</div>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="activity-icon chat"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg></div>
+                  <div class="activity-body">
+                    <p>Chatted with <strong>Vendor_Agreement_v3.docx</strong></p>
+                    <div class="activity-time">1 hour ago · 7 turns</div>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="activity-icon summary"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg></div>
+                  <div class="activity-body">
+                    <p>Generated insights for <strong>Research_Survey_2026.pdf</strong></p>
+                    <div class="activity-time">3 hours ago · 12 entities, 4 themes</div>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="activity-icon upload"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg></div>
+                  <div class="activity-body">
+                    <p>Bulk-uploaded <strong>17 lecture notes</strong> from CS-501</p>
+                    <div class="activity-time">Yesterday · 2.4 MB total</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px;">
+            <div class="card-head">
+              <div class="card-title">Quick actions</div>
+            </div>
+            <div class="qa-grid qa-grid--4">
+              <div class="qa-btn" data-view-go="documents">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                </svg>
+                <div class="qa-btn-label">Upload documents</div>
+                <div class="qa-btn-desc">PDF · DOCX · XLSX · PPTX · IMG</div>
+              </div>
+              <div class="qa-btn" data-view-go="search">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <div class="qa-btn-label">Semantic search</div>
+                <div class="qa-btn-desc">Ask in plain English</div>
+              </div>
+              <div class="qa-btn" data-view-go="chat">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <div class="qa-btn-label">Chat with documents</div>
+                <div class="qa-btn-desc">Cited answers · grounded</div>
+              </div>
+              <div class="qa-btn" data-view-go="insights">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <div class="qa-btn-label">Generate insights</div>
+                <div class="qa-btn-desc">Summaries · entities · trends</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============== DOCUMENTS ============== -->
+        <section class="view" id="view-documents">
+          <div class="section-head">
+            <div>
+              <h1>Your <span class="gradient-text">Documents</span></h1>
+              <div class="subtitle">Upload, organize, and instantly index any file. Synapse extracts knowledge in seconds.</div>
+            </div>
+          </div>
+
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" multiple style="display:none"
+              accept=".pdf,.txt,.md,.csv,.json,.log,.html,.xml,.docx,.xlsx,.pptx,.png,.jpg,.jpeg,.epub" />
+            <div class="upload-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+              </svg>
+            </div>
+            <h3>Drop files here, or <span style="color:#a78bfa;cursor:pointer">browse</span></h3>
+            <p>Synapse will OCR scans, extract text, embed each chunk, and index everything for retrieval.</p>
+            <div class="format-pills">
+              <span>PDF</span><span>DOCX</span><span>XLSX</span><span>PPTX</span>
+              <span>TXT · MD</span><span>PNG · JPG (OCR)</span><span>EPUB</span>
+            </div>
+          </div>
+          <div class="upload-progress" id="uploadProgress"></div>
+
+          <div class="docs-toolbar">
+            <div class="tab-row">
+              <div class="tab active">All</div>
+              <div class="tab">Recent</div>
+              <div class="tab">Starred</div>
+              <div class="tab">Shared</div>
+              <div class="tab">Trash</div>
+            </div>
+            <button class="icon-btn" title="Grid view" data-action="grid-toggle"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z" />
+              </svg></button>
+            <button class="icon-btn" title="Sort" data-action="sort-toggle"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M3 6h18M6 12h12M9 18h6" />
+              </svg></button>
+          </div>
+
+          <div class="docs-grid" id="docsGrid"></div>
+        </section>
+
+        <!-- ============== SEARCH ============== -->
+        <section class="view" id="view-search">
+          <div class="search-hero">
+            <h1>Ask anything across your <span class="gradient-text">entire library</span></h1>
+            <div class="subtitle">Natural language semantic search across 1,284 documents. Powered by vector embeddings + reranking.</div>
+            <div class="smart-search">
+              <div class="smart-search-bar">
+                <svg class="search-glyph" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input id="searchInput" aria-label="Semantic search query" placeholder="What contracts mention indemnification clauses with $ thresholds?" />
+                <div class="search-mode">
+                  <div class="search-mode-btn active">Semantic</div>
+                  <div class="search-mode-btn">Keyword</div>
+                  <div class="search-mode-btn">Hybrid</div>
+                </div>
+                <button class="send-btn" id="searchBtn" type="button" aria-label="Run search">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="m22 2-7 20-4-9-9-4 20-7z" />
+                  </svg>
+                </button>
+              </div>
+              <div class="search-suggestions">
+                <div class="suggestion-chip">📄 Show me Q2 financial highlights</div>
+                <div class="suggestion-chip">⚖️ GDPR compliance in vendor contracts</div>
+                <div class="suggestion-chip">🧠 Key findings on transformer scaling</div>
+                <div class="suggestion-chip">📊 Compare last two earnings reports</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="search-results empty" id="searchResults">
+            <div class="results-list" id="resultsList"></div>
+            <div class="results-side">
+              <div class="facet-card">
+                <div class="facet-title">Filter by type</div>
+                <div class="facet-row"><span>📄 PDF</span><span class="count">14</span></div>
+                <div class="facet-row"><span>📘 DOCX</span><span class="count">8</span></div>
+                <div class="facet-row"><span>📊 XLSX</span><span class="count">3</span></div>
+                <div class="facet-row"><span>📝 TXT/MD</span><span class="count">5</span></div>
+              </div>
+              <div class="facet-card">
+                <div class="facet-title">Filter by date</div>
+                <div class="facet-row"><span>This week</span><span class="count">9</span></div>
+                <div class="facet-row"><span>This month</span><span class="count">21</span></div>
+                <div class="facet-row"><span>This year</span><span class="count">96</span></div>
+                <div class="facet-row"><span>All time</span><span class="count">128</span></div>
+              </div>
+              <div class="facet-card">
+                <div class="facet-title">Top entities</div>
+                <div class="facet-row"><span>Acme Corp</span><span class="count">12</span></div>
+                <div class="facet-row"><span>EU Commission</span><span class="count">7</span></div>
+                <div class="facet-row"><span>Q2 2026</span><span class="count">5</span></div>
+                <div class="facet-row"><span>Dr. Lin Wu</span><span class="count">4</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============== CHAT ============== -->
+        <section class="view" id="view-chat">
+          <div class="section-head" style="margin-bottom:16px;">
+            <div>
+              <h1>AI <span class="gradient-text">Document Chat</span></h1>
+              <div class="subtitle">Ask grounded questions about any document. Every answer is cited and traceable.</div>
+            </div>
+          </div>
+
+          <div class="chat-layout">
+            <aside class="chat-side">
+              <button class="new-chat-btn">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                New conversation
+              </button>
+              <div id="chatHistoryList"></div>
+            </aside>
+
+            <div class="chat-main">
+              <div class="chat-context-bar" id="chatCtxBar">
+                <div class="chat-context-doc">
+                  <div class="doc-icon docx" id="chatCtxIcon">DOC</div>
+                  <div>
+                    <div id="chatCtxName" style="font-weight:600;">No document grounded</div>
+                    <div id="chatCtxMeta" style="font-size:11px;color:var(--text-faint);">Upload a doc to ground replies in real text.</div>
+                  </div>
+                </div>
+                <div class="chat-meta-pill" id="chatCtxPill"><span class="dot"></span> Idle</div>
+              </div>
+              <div class="chat-messages" id="chatMessages"></div>
+              <div class="chat-input-bar">
+                <div class="chat-quick">
+                  <div class="chat-quick-chip">📋 Generate action items</div>
+                  <div class="chat-quick-chip">⚠️ Risk assessment</div>
+                  <div class="chat-quick-chip">🌐 Translate to plain English</div>
+                  <div class="chat-quick-chip">🔍 Find similar clauses elsewhere</div>
+                </div>
+                <div class="chat-input">
+                  <textarea id="chatInput" aria-label="Chat message" placeholder="Ask anything about this document…"></textarea>
+                  <button id="chatSendBtn" type="button" aria-label="Send message">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="m22 2-7 20-4-9-9-4 20-7z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============== INSIGHTS ============== -->
+        <section class="view" id="view-insights">
+          <div class="section-head">
+            <div>
+              <h1>Document <span class="gradient-text">Insights</span></h1>
+              <div class="subtitle">Auto-generated summaries, key entities, themes, and sentiment — at a glance.</div>
+            </div>
+            <div class="tab-row" id="insightsTabs">
+              <div class="tab active">Q2_Financial_Report.pdf</div>
+              <div class="tab">Vendor_Agreement_v3</div>
+              <div class="tab">Research_Survey_2026</div>
+            </div>
+          </div>
+
+          <div class="insights-grid" id="insightsGrid">
+            <div class="insights-col">
+              <div class="summary-card">
+                <div class="summary-doc-row">
+                  <div class="doc-icon pdf">PDF</div>
+                  <div>
+                    <div class="summary-title">Q2_Financial_Report.pdf</div>
+                    <div class="summary-meta">38 pages · 14,205 words · uploaded 2 minutes ago</div>
+                  </div>
+                </div>
+                <div class="ai-label">
+                  <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M12 2v6m0 8v6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6" />
+                  </svg>
+                  AI summary
+                </div>
+                <p class="summary-text">
+                  The company posted <mark>Q2 revenue of $48.2M</mark>, up <mark>23.4% YoY</mark>, driven primarily by enterprise expansion in EMEA and a new strategic partnership with <mark>Acme Corp</mark>. Operating margin improved to <mark>18.6%</mark> on tighter COGS controls. Customer churn fell to <mark>2.1%</mark> — a record low. Management raised full-year guidance and announced a $20M investment in AI infrastructure. Risks flagged include forex exposure (~$3M sensitivity per 100 bps) and regulatory uncertainty around upcoming EU AI Act provisions.
+                </p>
+
+                <div class="key-points">
+                  <div class="key-point">
+                    <div class="key-point-num">1</div>
+                    <div class="key-point-text"><strong>Revenue growth accelerated</strong> — Q2 grew 23.4% YoY vs 18.1% in Q1, driven by enterprise tier (+47%).</div>
+                  </div>
+                  <div class="key-point">
+                    <div class="key-point-num">2</div>
+                    <div class="key-point-text"><strong>Margin expansion</strong> — operating margin up 380bps; gross margin held steady at 71.2% despite cloud cost pressure.</div>
+                  </div>
+                  <div class="key-point">
+                    <div class="key-point-num">3</div>
+                    <div class="key-point-text"><strong>Strategic Acme partnership</strong> — projected to add ~$8–12M in ARR over four quarters, with first revenue recognition in Q3.</div>
+                  </div>
+                  <div class="key-point">
+                    <div class="key-point-num">4</div>
+                    <div class="key-point-text"><strong>Guidance raised</strong> — full-year revenue guided to $195–202M (prior $182–190M); EPS guidance raised in tandem.</div>
+                  </div>
+                  <div class="key-point">
+                    <div class="key-point-num">5</div>
+                    <div class="key-point-text"><strong>Watch items</strong> — EU AI Act compliance costs, USD/EUR forex, and a single customer concentration risk now at 11%.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">Top themes</div>
+                  <div class="card-action">Refresh →</div>
+                </div>
+                <div class="tag-cloud">
+                  <span class="cloud-tag xl">enterprise growth</span>
+                  <span class="cloud-tag lg">margin expansion</span>
+                  <span class="cloud-tag xl">EMEA expansion</span>
+                  <span class="cloud-tag">forex risk</span>
+                  <span class="cloud-tag lg">AI infrastructure</span>
+                  <span class="cloud-tag">EU AI Act</span>
+                  <span class="cloud-tag lg">churn reduction</span>
+                  <span class="cloud-tag">customer concentration</span>
+                  <span class="cloud-tag xl">Acme partnership</span>
+                  <span class="cloud-tag">guidance raise</span>
+                  <span class="cloud-tag lg">cloud cost</span>
+                  <span class="cloud-tag">working capital</span>
+                  <span class="cloud-tag">FY26 outlook</span>
+                  <span class="cloud-tag lg">SaaS metrics</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="insights-col">
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">Named entities</div>
+                  <div class="card-action">All →</div>
+                </div>
+                <div class="entities-list">
+                  <div class="entity-row">
+                    <div class="entity-icon org">ORG</div>
+                    <div class="entity-info">
+                      <div class="entity-name">Acme Corp</div>
+                      <div class="entity-type">Organization · Strategic partner</div>
+                    </div>
+                    <div class="entity-count">12 mentions</div>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-icon person">PER</div>
+                    <div class="entity-info">
+                      <div class="entity-name">Sarah Chen</div>
+                      <div class="entity-type">Person · CFO</div>
+                    </div>
+                    <div class="entity-count">8 mentions</div>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-icon money">$</div>
+                    <div class="entity-info">
+                      <div class="entity-name">$48.2M</div>
+                      <div class="entity-type">Money · Q2 Revenue</div>
+                    </div>
+                    <div class="entity-count">6 mentions</div>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-icon location">GEO</div>
+                    <div class="entity-info">
+                      <div class="entity-name">EMEA</div>
+                      <div class="entity-type">Region · Growth driver</div>
+                    </div>
+                    <div class="entity-count">11 mentions</div>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-icon date">📅</div>
+                    <div class="entity-info">
+                      <div class="entity-name">Q3 2026</div>
+                      <div class="entity-type">Date · Forward-looking</div>
+                    </div>
+                    <div class="entity-count">9 mentions</div>
+                  </div>
+                  <div class="entity-row">
+                    <div class="entity-icon org">ORG</div>
+                    <div class="entity-info">
+                      <div class="entity-name">EU Commission</div>
+                      <div class="entity-type">Organization · Regulator</div>
+                    </div>
+                    <div class="entity-count">5 mentions</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">Document sentiment</div>
+                  <div class="card-action">Per section →</div>
+                </div>
+                <div class="sentiment-bar">
+                  <div class="pos" style="width:62%"></div>
+                  <div class="neu" style="width:28%"></div>
+                  <div class="neg" style="width:10%"></div>
+                </div>
+                <div class="sentiment-legend">
+                  <div class="pos"><span class="dot"></span>Positive · 62%</div>
+                  <div class="neu"><span class="dot"></span>Neutral · 28%</div>
+                  <div class="neg"><span class="dot"></span>Negative · 10%</div>
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);margin-top:14px;line-height:1.5">
+                  Tone is broadly optimistic, anchored by growth and margin sections. Negative sentiment is concentrated in the <em>Risk Factors</em> section, particularly around forex and regulation — typical for an earnings disclosure.
+                </p>
+              </div>
+
+              <div class="card">
+                <div class="card-head">
+                  <div class="card-title">AI confidence</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
+                  <div style="position:relative;width:80px;height:80px;">
+                    <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg);">
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3" />
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#g1)" stroke-width="3" stroke-dasharray="92,100" stroke-linecap="round" />
+                      <defs>
+                        <linearGradient id="g1" x1="0" x2="1">
+                          <stop offset="0" stop-color="#8b5cf6" />
+                          <stop offset="1" stop-color="#22d3ee" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div style="position:absolute;inset:0;display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:18px;">92%</div>
+                  </div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;">High confidence</div>
+                    <div style="font-size:12px;color:var(--text-dim);margin-top:4px;line-height:1.5">All key facts cross-verified against numerical tables. Three claims have lower confidence and have been flagged.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="doc-preview" id="docPreview" hidden>
+    <div class="doc-preview-card">
+      <header>
+        <div class="doc-preview-title" id="docPreviewTitle"></div>
+        <button type="button" class="icon-btn" id="docPreviewClose" aria-label="Close preview">✕</button>
+      </header>
+      <pre id="docPreviewBody"></pre>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="toast-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    </div>
+    <div>
+      <div id="toastTitle" style="font-weight:600;">Indexed successfully</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:2px;" id="toastSub">3 documents are now searchable.</div>
+    </div>
+  </div>
+
+  <!-- pdf.js for real PDF text extraction (SRI-pinned) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+    integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <!-- mammoth.js for DOCX text extraction -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"
+    integrity="sha384-nFoSjZIoH3CCp8W639jJyQkuPHinJ2NHe7on1xvlUA7SuGfJAfvMldrsoAVm6ECz"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <!-- SheetJS for XLSX text extraction -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+    integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+
+  <!-- Semantic embeddings (transformers.js / Xenova MiniLM) - module, deferred -->
+  <script type="module" src="js/embeddings.js"></script>
+
+  <!-- Scripts: order matters (utils → groq → data → storage → modules → app) -->
+  <script src="js/utils.js"></script>
+  <script src="js/groq.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/documents.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
