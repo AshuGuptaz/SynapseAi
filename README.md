@@ -4,8 +4,6 @@
 
 Built with Next.js 15, Three.js, Groq (llama-3.3-70b), OpenAI embeddings, and Supabase pgvector. Inspired by the Muse AI design aesthetic — earthy, cinematic, system-first.
 
----
-
 ## What is Synapse AI?
 
 Synapse AI turns your documents into a queryable knowledge base. You drag in a PDF, Word doc, spreadsheet, or plain text file — it extracts every word, optionally embeds it into a vector store, and then lets you:
